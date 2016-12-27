@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="100%" height="100%" 
+	backgroundColor="#FFFFFF" 
+	backgroundAlpha="1.0" alpha="1.0" 
+	implements="slicol.minigame.BubbleBreaker.i.IGameStage" 
+	xmlns:mxml="slicol.minigame.BubbleBreaker.view.mxml.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import slicol.minigame.BubbleBreaker.command.GameStartCommand;
+			import slicol.minigame.BubbleBreaker.event.StartEvent;
+			import slicol.minigame.BubbleBreaker.model.GameModel;
+			import slicol.minigame.BubbleBreaker.vo.BubbleVO;
+			
+			private var arrBubble:Array;
+			
+			[Bindable]
+			private var modeList:Array = GameModel.getInstance().modeList;
+
+			public function init():void
+			{
+				var gm:GameModel = GameModel.getInstance();
+				gm.view = this;
+				
+				this.visible = true;
+				
+				this.stagePanel.x = (this.width - this.stagePanel.width) / 2;
+				this.stagePanel.y = 10;
+			}
+
+			public function load(w:int,h:int,bubbles:Array):void
+			{
+				this.winGameOver.visible = false;
+				this.stageView.visible = true;
+				
+				if(this.arrBubble != null)
+				{
+					if(this.arrBubble.length != w 
+					|| this.arrBubble[0].length != h)
+					{
+						resize(w,h);
+					}
+				}
+				else
+				{
+					resize(w,h);
+				}
+				
+				reload(w,h,bubbles);
+			}
+			
+			private function reload(w:int,h:int,bubbles:Array):void
+			{
+				var x:int;
+				var y:int;
+				
+				for(x = 0; x < w; ++x)
+				{
+					for(y = 0; y < h; ++y)
+					{
+						var vo:BubbleVO = new BubbleVO(x,y,bubbles[x][y]);
+						var view:Bubble = arrBubble[x][y];
+						view.vo = vo;
+					}
+				}
+			}
+			
+			private function resize(w:int,h:int):void
+			{
+				var x:int;
+				var y:int;
+				var view:Bubble;
+				
+				if(this.arrBubble != null)
+				{
+					for(x = 0; x < this.arrBubble.length; ++x)
+					{
+						var arrCol:Array = this.arrBubble[x];
+						for(y = 0; y < arrCol.length; ++y)
+						{
+							view = this.arrBubble[x][y];
+							this.stageView.removeChild(view);
+						}
+					}						
+				}
+				
+				this.arrBubble = new Array(w);
+				for(x = 0; x < w; ++x)
+				{
+					this.arrBubble[x] = new Array(h);
+					for(y = 0; y < h; ++y)
+					{
+						view = new Bubble;
+						view.x = x * view.width;
+						view.y = y * view.height;
+						this.stageView.addChild(view);
+						this.arrBubble[x][y] = view;
+						
+					}
+				}
+				
+				this.stageView.width = w * view.width;
+				this.stageView.height = h * view.height;
+				
+
+			
+				updateLayout();
+			}
+			
+			public function updateLayout():void
+			{
+				//this.width = Math.max(this.stageView.width, this.stagePanel.width) + 20;
+				//this.height = this.stageView.height + this.stagePanel.height + 50;
+				
+				this.stageView.x = (this.width - this.stageView.width) / 2;
+				this.stageView.y = 10;
+				
+				this.stagePanel.x = (this.width - this.stagePanel.width) / 2;
+				this.stagePanel.y = this.stageView.y + this.stageView.height + 10;
+				
+				this.winGameOver.x = (this.width - this.winGameOver.width) / 2;
+				this.winGameOver.y = (this.stageView.height - this.winGameOver.height) / 2 + this.stageView.y ;
+			}
+			
+			
+			
+			public function setBubble(x:int,y:int,value:int):void
+			{
+				var view:Bubble = arrBubble[x][y];
+				view.value = value;
+			}
+			
+			public function markBubble(x:int,y:int, mark:Boolean):void
+			{
+				var view:Bubble = arrBubble[x][y];
+				view.mark = mark;
+			}
+			
+			public function showStepScore(score:int):void
+			{
+				this.lblStepScore.text = score.toString();
+			}
+			
+			public function showStageScore(score:int):void
+			{
+				this.lblStageScore.text = score.toString();
+			}
+			
+			public function showGameOver(stageScore:int,stageRank:int,stageMode:int):void
+			{
+				this.winGameOver.visible = true;
+				this.lblGameOverScore.text = stageScore.toString();
+				this.lblGameOverMode.text = modeList[stageMode];
+				this.lblGameOverRank.text = stageRank.toString();
+			}
+			
+			private function onBtnStart():void
+			{
+				var cmd:GameStartCommand = new GameStartCommand;
+				var e:StartEvent = new StartEvent();
+				e.width = 11;
+				e.height = 11;
+				e.typeCount = 5;
+				e.mode = this.cboMode.selectedIndex;
+				cmd.execute(e);
+			}
+
+			
+		]]>
+	</mx:Script>
+	<mx:Canvas id="stageView" visible="false" 
+		x="101" y="2" width="357" height="366"
+		borderStyle="solid" borderColor="#FB0404" cornerRadius="5" 
+		verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	</mx:Canvas>
+	<mx:Canvas id="stagePanel" x="34" y="10" width="363" height="112" borderColor="#0090F5"
+			   borderStyle="solid" cornerRadius="5">
+		<mx:Label x="0" y="10" text="步骤分：" width="53" fontSize="12"/>
+		<mx:Label id="lblStepScore" x="61" y="10" text="0" width="76" fontSize="12"/>
+		<mx:Label x="0" y="34" text="单局分：" fontSize="12"/>
+		<mx:Label id="lblStageScore" x="61" y="34" text="0" width="76" fontSize="12"/>
+		<mx:Label x="0" y="57" text="总积分：" fontSize="12"/>
+		<mx:Label id="lblTotalScore" x="61" y="57" text="0" width="76" fontSize="12"/>
+		<mx:ComboBox id="cboMode" x="194" y="7" width="89" fontSize="12" dataProvider="{modeList}"/>
+		<mx:Label x="145" y="10" text="模式：" fontSize="12"/>
+		<mx:VRule x="135" y="10" height="61" strokeColor="#FD0000"/>
+		<mx:Button x="291" y="8" label="开始" fontSize="12" width="52" height="63" click="onBtnStart()"/>
+		<mxml:SlicolLogo id="logo" x="4" y="83" width="354">
+		</mxml:SlicolLogo>
+	</mx:Canvas>
+	
+	<mx:TitleWindow id="winGameOver" visible="false" 
+		x="34.5" y="88" width="286" height="179" layout="absolute" title="Bubble Breaker">
+		<mx:Label x="10" y="0" text="Game Over" width="246" height="49" fontSize="36" color="#FC0600" textAlign="center" fontWeight="bold"/>
+		<mx:Label x="82" y="82" text="单局积分：" fontSize="12" color="#1A6CF5"/>
+		<mx:Label x="82" y="107" text="单局排行：" fontSize="12" color="#1A6CF5"/>
+		<mx:Label x="82" y="57" text="游戏模式：" fontSize="12" color="#1A6CF5"/>
+		<mx:Label id="lblGameOverScore" x="145" y="82" text="0" fontSize="12" color="#F63535"/>
+		<mx:Label id="lblGameOverRank" x="145" y="107" text="0" fontSize="12" color="#F63535"/>
+		<mx:Label id="lblGameOverMode" x="145" y="57" text="标准" fontSize="12" color="#F63535"/>
+	</mx:TitleWindow>
+
+	
+</mx:Canvas>

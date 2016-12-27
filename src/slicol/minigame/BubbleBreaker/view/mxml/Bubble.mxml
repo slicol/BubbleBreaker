@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="30" height="30" 
+	borderStyle="none"
+	click="onClick()"
+	mouseOver="onOver()"
+	mouseOut="onOut()" backgroundAlpha="1.0"
+	creationComplete="onCreationComplete()" 
+	verticalScrollPolicy="off" horizontalScrollPolicy="off"
+	backgroundColor="#989898" implements="slicol.minigame.BubbleBreaker.i.IBubble"
+	>
+	
+	<mx:Script>
+		<![CDATA[
+			import slicol.minigame.BubbleBreaker.command.BubbleClickCommand;
+			import slicol.minigame.BubbleBreaker.event.BubbleEvent;
+			import slicol.minigame.BubbleBreaker.vo.BubbleVO;
+			
+			private var _vo:BubbleVO;
+			
+			
+			
+			public function set value(data:int):void
+			{
+				this._vo.value = data;
+				this.updateValue(this._vo.value);
+			}
+			
+			public function get value():int
+			{
+				return this._vo.value;
+			}
+			
+			public function get mark():Boolean
+			{
+				return this._vo.mark;
+			}
+			
+			public function set mark(data:Boolean):void
+			{
+				this._vo.mark = data;
+				if(data)
+				{
+					this.setStyle("backgroundAlpha","1");
+				}
+				else
+				{
+					this.setStyle("backgroundAlpha","0");
+				}
+			}
+			
+			
+			public function set vo(data:BubbleVO):void
+			{
+				this._vo = data;
+				this.updateValue(this._vo.value);
+			}
+			
+			public function get vo():BubbleVO
+			{
+				return this._vo;
+			}
+			
+			private function onCreationComplete():void
+			{
+				this.updateValue(this._vo.value);
+			}
+			
+			private function updateValue(data:int):void
+			{
+				this.setStyle("backgroundAlpha","0");
+				switch(data)
+				{
+				case 0:
+					this.img.source = null;
+					break;
+				case 1:
+					//this.setStyle("backgroundColor","#FA0495");
+					this.img.source = AssetsBubble.bubble1;
+					break;
+				case 2:
+					//this.setStyle("backgroundColor","#05F49A");
+					this.img.source = AssetsBubble.bubble2;
+					break;
+				case 3:
+					//this.setStyle("backgroundColor","#5F049A");
+					this.img.source = AssetsBubble.bubble3;
+					break;
+				case 4:
+					//this.setStyle("backgroundColor","#05FA49");
+					this.img.source = AssetsBubble.bubble4;
+					break;
+				case 5:
+					//this.setStyle("backgroundColor","#9504FA");
+					this.img.source = AssetsBubble.bubble5;
+					break;
+
+				}				
+			}
+
+			private function onClick():void
+			{
+				var cmd:BubbleClickCommand = new BubbleClickCommand;
+				cmd.execute(new BubbleEvent(BubbleEvent.EVENT_BUBBLE_CLICK, this._vo));
+			}
+			
+			private function onOver():void
+			{
+				this.img.alpha = 0.8;
+			}
+			
+			private function onOut():void
+			{
+				this.img.alpha = 1;
+			}
+		
+		]]>
+	</mx:Script>
+	<mx:Image x="2" y="2" width="25" height="25" id="img"  alpha="1.0">
+		<mx:source>com/tencent/QQPet/Slicol/BubbleBreaker/view/assets/Bubble1.png</mx:source>
+	</mx:Image>
+	
+</mx:Canvas>

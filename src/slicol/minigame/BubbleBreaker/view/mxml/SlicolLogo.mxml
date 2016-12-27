@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="350" height="22">
+	<mx:Label x="0" y="0" text="Author: Slicol @ www.qq.com 2008.12.7" color="#FF0707" 
+			  fontSize="12" width="100%" textAlign="center" height="100%"/>
+	
+</mx:Canvas>

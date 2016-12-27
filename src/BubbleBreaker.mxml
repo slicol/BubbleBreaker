@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:view="slicol.minigame.BubbleBreaker.view.*" 
+	layout="absolute" 
+	width="640" height="960" backgroundColor="0"
+	addedToStage="onAddToStage(event)" backgroundAlpha="0" 
+	xmlns:mxml="slicol.minigame.BubbleBreaker.view.mxml.*">
+
+	<mx:Script>
+		<![CDATA[
+			import slicol.minigame.BubbleBreaker.model.GameModel;
+			import slicol.minigame.BubbleBreaker.view.as3.GameStage;
+			import slicol.minigame.BubbleBreaker.view.mxml.GameStage;
+			import slicol.minigame.BubbleBreaker.view.starling.GameStage;			
+			
+
+			protected function onAddToStage(event:Event):void
+			{
+				//this.gameStage.init();
+				
+				//StarlingStartup.start(this.stage, com.tencent.slicol.minigame.BubbleBreaker.view.starling.GameStage);
+				
+				//com.tencent.slicol.minigame.BubbleBreaker.view.as3.GameStage.start(this.stage);
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				slicol.minigame.BubbleBreaker.view.as3.GameStage.start(this.stage);
+				btnPureAS.visible = false;
+				btnStarling.visible = false;
+				
+				
+				var a:Test = new Test;
+				
+			}
+			
+			
+			
+			protected function btnStarling_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				StarlingStartup.start(this.stage, slicol.minigame.BubbleBreaker.view.starling.GameStage);
+				btnPureAS.visible = false;
+				btnStarling.visible = false;
+				
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mxml:GameStage id="gameStage" visible="false" left="10" right="10" top="10" bottom="10">
+	</mxml:GameStage>
+	<mx:Button id="btnPureAS" x="38" y="32" label="PureAS" click="button1_clickHandler(event)"/>
+	<mx:Button id="btnStarling" x="128" y="33" label="Starling"
+			   click="btnStarling_clickHandler(event)"/>
+	
+</mx:Application>
